@@ -1,22 +1,19 @@
-#install.packages("randomForest")
 library(randomForest)
-#set.seed(101)
+#install.packages("caret")
+library(caret)
+library(e1071)
 data <- read.csv (file="C:\\Users\\ANSHUMAN\\Desktop\\Semester 6\\Cyber Security\\Project\\corrected\\Book2.csv",header=T)
-#train=sample(1:nrow(data),300)
-SameSrvRate <- data$SameSrvRate #29
-Flag <- data$Flag #4
-LoggedIn <- data$LoggedIn #12
-RerrorRate <- data$RerrorRate
-DstHostSrvRerrorRate <- data$DstHostSrvRerrorRate
-SrvRerrorRate <- data$SrvRerrorRate
-attack <-data$Attack
-duration <-data$Duration
-numberfailedlogin <-data$NumFailedLogin
-#service <- data$Service
-srcbyte <- data$SrcBytes
-dstbyte <- data$DstBytes
-output.forest <- randomForest(attack ~ srcbyte+dstbyte+numberfailedlogin + duration + SameSrvRate + Flag + LoggedIn + RerrorRate + DstHostSrvRerrorRate + SrvRerrorRate, 
-                              data = data)
+data1 <- data[,c("SrcBytes", "DstBytes",  "DstHostSameSrvRate", "Count", "DstHostDiffSrvRate","Attack" )]
+inTrain <- createDataPartition(y=data1$Attack,p=0.5, list=FALSE)
+str (data)
+training <- data1[inTrain,]
+testing <- data1[-inTrain,]
+dim <-nrow (training)
+dim(training)
+#data2 <- data.frame(SrvRerrorRate=0,RerrorRate=0,Flag="SF",DstHostRerrorRate=0,LoggedIn=0,ProtocolType="udp")
+output.forest <- randomForest(Attack ~ ., data = training)
 print(output.forest)
-testData =data.frame(srcbyte=105, dstbyte=146, numberfailedlogin=0,duration=0, SameSrvRate=1, Flag="SF", LoggedIn = 0, RerrorRate=0, DstHostSrvRerrorRate=0, SrvRerrorRate=0)
-predict(output.forest,testData)
+plot (output.forest)
+pred <- predict(output.forest,testing) 
+pred
+str (data)

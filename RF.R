@@ -3,8 +3,9 @@ library(randomForest)
 library(caret)
 library(e1071)
 data <- read.csv (file="C:\\Users\\ANSHUMAN\\Desktop\\Semester 6\\Cyber Security\\Project\\corrected\\Book2.csv",header=T)
-data1 <- data[,c("SrcBytes", "DstBytes",  "DstHostSameSrvRate", "Count", "DstHostDiffSrvRate","Attack" )]
-inTrain <- createDataPartition(y=data1$Attack,p=0.5, list=FALSE)
+#data1 <- data[,c("SrcBytes", "DstBytes",  "DstHostSameSrvRate", "Count", "DstHostDiffSrvRate","Attack" )]
+data1 <- data[,c("SameSrvRate", "LoggedIn",  "DstHostSameSrvRate", "DstHostSrvCount","Flag","Attack" )]
+inTrain <- createDataPartition(y=data1$Attack,p=0.1, list=FALSE)
 str (data)
 training <- data1[inTrain,]
 testing <- data1[-inTrain,]
